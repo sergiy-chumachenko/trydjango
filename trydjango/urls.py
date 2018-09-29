@@ -9,11 +9,11 @@ from products.views import (product_create_view,
 
 urlpatterns = [
     path('', home_view, name='home'),
-    path('about', about_view),
-    path('contacts', contact_view),
-    path('products', product_list_view, name='product_list'),
+    path('about', about_view, name='about'),
+    path('contacts', contact_view, name='contact'),
+    path('products', product_list_view, name='product-list'),
     path('products/<int:my_id>/delete/', product_delete_view, name='product-delete'),
-    path('products/<int:my_id>/', dynamic_lookup_view, name='product'),
-    path('create', product_create_view),
+    path('products/<int:my_id>/', dynamic_lookup_view, name='product-detail'),
+    path('create', product_create_view, name='product-create'),
     path('admin', admin.site.urls),
 ]
