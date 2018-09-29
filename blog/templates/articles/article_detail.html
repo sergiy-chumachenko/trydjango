@@ -1,1 +1,6 @@
 {% extends 'base.html' %}
+{% block title %} Article Detail{% endblock %}
+{% block content %}
+    <h1>{{ object.title }}</h1>
+    <p>{{ object.text }}</p>
+{% endblock %}

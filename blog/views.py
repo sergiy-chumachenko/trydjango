@@ -8,6 +8,35 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Article
+from .forms import ArticleModelForm
+
+
+class ArticleCreateView(CreateView):
+    template_name = 'articles/article_create.html'
+    form_class = ArticleModelForm
+    queryset = Article.objects.all()
+    # success_url = '/'
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+    # def get_success_url(self):
+    #     return '/'
+
+
+class ArticleUpdateView(UpdateView):
+    template_name = 'articles/article_create.html'
+    form_class = ArticleModelForm
+    success_url = '../'
+
+    def get_object(self):
+        id_ = self.kwargs.get("id")
+        return get_object_or_404(Article, id=id_)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
 
 
 class ArticleListView(ListView):
@@ -17,7 +46,6 @@ class ArticleListView(ListView):
 
 class ArticleDetailView(DetailView):
     template_name = 'articles/article_detail.html'
-    queryset = Article.objects.all()
 
     def get_object(self):
         id_ = self.kwargs.get("id")

@@ -2,7 +2,7 @@ from django import forms
 from .models import Article
 
 
-class ArticleForm(forms.ModelForm):
+class ArticleModelForm(forms.ModelForm):
     title = forms.CharField(widget=forms.Textarea(
         attrs={
             'placeholder': 'Your Title'
