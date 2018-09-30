@@ -5,8 +5,21 @@ from .models import Course
 # BASE VIEW Class = VIEW
 
 
+class CourseListView(View):
+    template_name = "courses/course_list.html"
+    queryset = Course.objects.all()
+
+    def get_queryset(self):
+        return self.queryset
+
+    def get(self, request, *args, **kwargs):
+        context = {'object_list': self.get_queryset()}
+        return render(request, self.template_name, context=context)
+
+
 class CourseView(View):
     template_name = 'courses/course_detail.html'
+
     def get(self, request, id=None, *args, **kwargs):
         context = {}
         if id is not None:
