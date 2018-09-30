@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 
 from .forms import CourseModelForm
@@ -6,15 +6,42 @@ from .models import Course
 # BASE VIEW Class = VIEW
 
 
-class CourseUpdateView(View):
-    template_name = 'courses/course_update.html'
+class CourseObjectMixin(object):
+    model = Course
+    lookup = 'id'
 
     def get_object(self):
-        id = self.kwargs.get('id')
+        lookup = self.kwargs.get(self.lookup)
         obj = None
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
+        if lookup is not None:
+            obj = get_object_or_404(self.model, id=lookup)
         return obj
+
+
+class CourseDeleteView(CourseObjectMixin, View):
+    template_name = 'courses/course_delete.html'
+
+    def get(self, request, *args, **kwargs):
+        # GET METHOD
+        context = {}
+        obj = self.get_object()
+        if obj is not None:
+            context = {'object': obj}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        # POST METHOD
+        context = {}
+        obj = self.get_object()
+        if obj is not None:
+            obj.delete()
+            context['object'] = None
+            return redirect('courses:courses-list')
+        return render(request, self.template_name, context=context)
+
+
+class CourseUpdateView(CourseObjectMixin, View):
+    template_name = 'courses/course_update.html'
 
     def get(self, request, *args, **kwargs):
         # GET METHOD
@@ -70,15 +97,11 @@ class CourseListView(View):
         return render(request, self.template_name, context=context)
 
 
-class CourseView(View):
+class CourseView(CourseObjectMixin, View):
     template_name = 'courses/course_detail.html'
 
     def get(self, request, id=None, *args, **kwargs):
-        context = {}
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
-            context['object'] = obj
-            # GET METHOD
+        context = {'object': self.get_object()}
         return render(request, self.template_name, context=context)
 
 
